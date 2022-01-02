@@ -14,6 +14,7 @@ import {
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
@@ -22,13 +23,13 @@ import { Sidebar } from "../../components/Sidebar";
 export default function UserList() {
   const isWideVersion = useBreakpointValue({
     base: false,
-    lg: true
-  })
+    lg: true,
+  });
 
   return (
     <Box>
       <Header />
-      <Flex w="100%" my="6" maxWidth={1480} mx="auto" px={["2","8"]}>
+      <Flex w="100%" my="6" maxWidth={1480} mx="auto" px={["2", "8"]}>
         <Sidebar />
 
         <Box flex="1" borderRadius={8} bg="gray.800" p="8">
@@ -36,17 +37,18 @@ export default function UserList() {
             <Heading size="lg" fontWeight="normal">
               Usuários
             </Heading>
-
-            <Button
-              as="a"
-              size="sm"
-              fontSize="sm"
-              colorScheme="pink"
-              cursor="pointer"
-              leftIcon={<Icon as={RiAddLine} fontSize={20} />}
-            >
-              Cria novo
-            </Button>
+            <Link href="/users/create" passHref>
+              <Button
+                as="a"
+                size="sm"
+                fontSize="sm"
+                colorScheme="pink"
+                cursor="pointer"
+                leftIcon={<Icon as={RiAddLine} fontSize={20} />}
+              >
+                Cria novo
+              </Button>
+            </Link>
           </Flex>
 
           <Table colorScheme="whiteAlpha">
@@ -56,7 +58,7 @@ export default function UserList() {
                   <Checkbox colorScheme="pink" />
                 </Th>
                 <Th>Usuário</Th>
-               {isWideVersion && <Th>Data de cadastro</Th> }
+                {isWideVersion && <Th>Data de cadastro</Th>}
                 <Th w="8"></Th>
               </Tr>
             </Thead>
@@ -73,25 +75,25 @@ export default function UserList() {
                     </Text>
                   </Box>
                 </Td>
-               {isWideVersion && <Td>04 de Abril, 2021</Td> }
+                {isWideVersion && <Td>04 de Abril, 2021</Td>}
                 <Td>
                   {isWideVersion && (
-                  <Button
-                    as="a"
-                    size="sm"
-                    fontSize="sm"
-                    colorScheme="whiteAlpha"
-                    cursor="pointer"
-                    leftIcon={<Icon as={RiPencilLine} fontSize={16} />}
-                  >
-                    Editar
-                  </Button>
+                    <Button
+                      as="a"
+                      size="sm"
+                      fontSize="sm"
+                      colorScheme="whiteAlpha"
+                      cursor="pointer"
+                      leftIcon={<Icon as={RiPencilLine} fontSize={16} />}
+                    >
+                      Editar
+                    </Button>
                   )}
                 </Td>
               </Tr>
             </Tbody>
           </Table>
-          <Pagination/>
+          <Pagination />
         </Box>
       </Flex>
     </Box>
