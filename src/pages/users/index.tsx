@@ -16,6 +16,7 @@ import {
   Spinner,
   Link,
 } from "@chakra-ui/react";
+import { GetServerSideProps } from "next";
 import NextLink from "next/link";
 import { useState } from "react";
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
@@ -23,26 +24,35 @@ import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 import { api } from "../../services/api";
-import { UserUsers } from "../../services/hooks/useUsers";
+import { getUsers, UserUsers } from "../../services/hooks/useUsers";
 import { queryClient } from "../../services/queryClient";
 
-export default function UserList() {
-  const [page, setPage] = useState(1)
-  const { data, isLoading, isFetching, error } = UserUsers(page)
+export default function UserList({ users }) {
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isFetching, error } = UserUsers(page, {
+    initialData: users
+  });
+
+  console.log(data);
+  
 
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
   });
 
-  async function handlePrefetchUser(userId: string){
-    await queryClient.prefetchQuery(["user", userId], async () => {
-      const response = await api.get(`users/${userId}`)
+  async function handlePrefetchUser(userId: string) {
+    await queryClient.prefetchQuery(
+      ["user", userId],
+      async () => {
+        const response = await api.get(`users/${userId}`);
 
-      return response.data
-    }, {
-      staleTime: 1000 * 60 * 10 // 10 min
-    })
+        return response.data;
+      },
+      {
+        staleTime: 1000 * 60 * 10, // 10 min
+      }
+    );
   }
 
   return (
@@ -103,7 +113,10 @@ export default function UserList() {
                         </Td>
                         <Td>
                           <Box>
-                            <Link color="purple.400" onMouseEnter={() => handlePrefetchUser(user.id)}>
+                            <Link
+                              color="purple.400"
+                              onMouseEnter={() => handlePrefetchUser(user.id)}
+                            >
                               <Text fontWeight="bold">{user.name}</Text>
                             </Link>
                             <Text fontSize="sm" color="gray.300">
@@ -133,10 +146,10 @@ export default function UserList() {
                   })}
                 </Tbody>
               </Table>
-              <Pagination 
-              totalCountfRegisters={data.totalCount} 
-              currentPage={page}
-              onPageChange={setPage}
+              <Pagination
+                totalCountfRegisters={data.totalCount}
+                currentPage={page}
+                onPageChange={setPage}
               />
             </>
           )}
@@ -145,3 +158,13 @@ export default function UserList() {
     </Box>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { users, totalCount } = await getUsers(1);
+
+  return {
+    props: {
+      users,
+    },
+  };
+};
