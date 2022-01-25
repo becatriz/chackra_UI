@@ -3,14 +3,14 @@ name: Remote Dispatch Action Responder
 on: [repository_dispatch]
 
 jobs:
-  ping-pong:
+  dispach-event-received:
     runs-on: ubuntu-latest
     steps:
       - name: Event Information
         run: |
           echo "Event '${{ github.event.action }}' received from '${{ github.event.client_payload.repository }}'"
-      - name: PONG - Dispatch response to received PING
-        if: github.event.action == 'ping'
+      - name: Dispatch response to received dispach-event-received
+        if: github.event.action == 'dispach-event'
         run: |
           curl -X POST https://api.github.com/repos/becatriz/api_node/dispatches \
           -H 'Accept: application/vnd.github.v3+json' \
